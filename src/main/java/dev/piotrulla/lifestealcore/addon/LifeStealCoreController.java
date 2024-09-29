@@ -50,15 +50,15 @@ public class LifeStealCoreController implements Listener {
 
         if (item.isSimilar(this.pluginConfig.ultraItem)) {
             Player player = event.getPlayer();
-            int maxHp = this.getMaxHpForPlayer(player);
+            int currentHp = this.getPlayerHp(player);
 
-            if (maxHp < this.pluginConfig.minimumHpToUse) {
+            if (currentHp < this.pluginConfig.minimumHpToUse) {
                 this.multification.player(player.getUniqueId(), message -> message.needMinimumHp);
                 event.setCancelled(true);
                 return;
             }
 
-            if (maxHp >= this.pluginConfig.maxUltraHp) {
+            if (currentHp >= this.pluginConfig.maxUltraHp) {
                 this.multification.player(player.getUniqueId(), message -> message.maximumHpReached);
                 event.setCancelled(true);
                 return;
@@ -71,7 +71,8 @@ public class LifeStealCoreController implements Listener {
 
             event.setCancelled(true);
 
-            this.lifestealCoreAPI.setPlayerMaxHearts(player.getUniqueId(), maxHp + this.pluginConfig.ultraAdditionHp);
+            this.lifestealCoreAPI.setPlayerMaxHearts(player.getUniqueId(), currentHp + this.pluginConfig.ultraAdditionHp);
+            this.lifestealCoreAPI.setPlayerHearts(player.getUniqueId(), this.lifestealCoreAPI.getPlayerMaxHearts(player.getUniqueId()));
             this.multification.player(player.getUniqueId(), message -> message.ultraItemUsed);
             this.delay.markDelay(player.getUniqueId());
 
@@ -79,8 +80,8 @@ public class LifeStealCoreController implements Listener {
         }
     }
 
-    int getMaxHpForPlayer(Player player) {
-        return this.lifestealCoreAPI.getPlayerMaxHearts(player.getUniqueId());
+    int getPlayerHp(Player player) {
+        return this.lifestealCoreAPI.getPlayerHearts(player.getUniqueId());
     }
 
     boolean hasDelay(Player player) {
