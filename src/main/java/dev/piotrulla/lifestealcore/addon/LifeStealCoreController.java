@@ -50,15 +50,15 @@ public class LifeStealCoreController implements Listener {
 
         if (item.isSimilar(this.pluginConfig.ultraItem)) {
             Player player = event.getPlayer();
-            int playerHearts = this.getMaxHpForPlayer(player);
+            int maxHp = this.getMaxHpForPlayer(player);
 
-            if (playerHearts < this.pluginConfig.minimumHpToUse) {
+            if (maxHp < this.pluginConfig.minimumHpToUse) {
                 this.multification.player(player.getUniqueId(), message -> message.needMinimumHp);
                 event.setCancelled(true);
                 return;
             }
 
-            if (playerHearts >= this.pluginConfig.maxUltraHp) {
+            if (maxHp >= this.pluginConfig.maxUltraHp) {
                 this.multification.player(player.getUniqueId(), message -> message.maximumHpReached);
                 event.setCancelled(true);
                 return;
@@ -71,8 +71,7 @@ public class LifeStealCoreController implements Listener {
 
             event.setCancelled(true);
 
-
-            this.lifestealCoreAPI.setPlayerMaxHearts(player.getUniqueId(), playerHearts + this.pluginConfig.ultraAdditionHp);
+            this.lifestealCoreAPI.setPlayerMaxHearts(player.getUniqueId(), maxHp + this.pluginConfig.ultraAdditionHp);
             this.multification.player(player.getUniqueId(), message -> message.ultraItemUsed);
             this.delay.markDelay(player.getUniqueId());
 
@@ -90,7 +89,7 @@ public class LifeStealCoreController implements Listener {
         }
 
         Duration duration = this.delay.getDurationToExpire(player.getUniqueId());
-        this.multification.viewer(player, messagesConfig -> messagesConfig.cooldownMessage, new Formatter().register("{TIME}", DurationUtil.format(duration)));
+        this.multification.viewer(player, messagesConfig -> messagesConfig.cooldownMessage, new Formatter().register("{TIME}", DurationUtil.format(duration, true)));
         return true;
     }
 }

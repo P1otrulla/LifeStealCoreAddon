@@ -98,8 +98,6 @@ tasks.withType<ShadowJar> {
         "panda"
     )
 
-    minimize()
-
     val prefix = "$mainPackage.libs"
 
     listOf(

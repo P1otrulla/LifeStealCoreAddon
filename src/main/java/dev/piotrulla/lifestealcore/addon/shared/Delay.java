@@ -2,7 +2,6 @@ package dev.piotrulla.lifestealcore.addon.shared;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Expiry;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -22,23 +21,8 @@ public final class Delay {
         this.defaultDelay = defaultDelay;
 
         this.delays = Caffeine.newBuilder()
-                .expireAfter(new Expiry<@NotNull UUID, @NotNull Instant>() {
-                    @Override
-                    public long expireAfterCreate(@NotNull UUID key, @NotNull Instant value, long currentTime) {
-                        long duration = Duration.between(Instant.ofEpochMilli(currentTime), value).toNanos();
-                        return duration > 0 ? duration : 0;
-                    }
-
-                    @Override
-                    public long expireAfterUpdate(@NotNull UUID key, @NotNull Instant value, long currentTime, long currentDuration) {
-                        return currentDuration;
-                    }
-
-                    @Override
-                    public long expireAfterRead(@NotNull UUID key, @NotNull Instant value, long currentTime, long currentDuration) {
-                        return currentDuration;
-                    }
-                })
+                .expireAfterWrite(defaultDelay)
+                .expireAfterAccess(defaultDelay)
                 .build();
     }
 
