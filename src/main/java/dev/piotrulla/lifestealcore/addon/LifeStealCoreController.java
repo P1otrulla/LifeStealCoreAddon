@@ -7,11 +7,14 @@ import dev.piotrulla.lifestealcore.addon.config.PluginConfig;
 import dev.piotrulla.lifestealcore.addon.shared.Delay;
 import dev.piotrulla.lifestealcore.addon.shared.DurationUtil;
 import dev.piotrulla.lifestealcore.addon.shared.ItemUtil;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.Duration;
 
@@ -20,13 +23,15 @@ public class LifeStealCoreController implements Listener {
     private final LifeStealCoreMultification multification;
     private final LifestealCoreAPI lifestealCoreAPI;
     private final PluginConfig pluginConfig;
+    private final MiniMessage miniMessage;
     private final Delay delay;
 
-    public LifeStealCoreController(LifeStealCoreMultification multification, LifestealCoreAPI lifestealCoreAPI, PluginConfig pluginConfig) {
+    public LifeStealCoreController(LifeStealCoreMultification multification, LifestealCoreAPI lifestealCoreAPI, PluginConfig pluginConfig, MiniMessage miniMessage) {
         this.multification = multification;
         this.lifestealCoreAPI = lifestealCoreAPI;
         this.pluginConfig = pluginConfig;
         this.delay = new Delay(pluginConfig.ultraItemCooldown);
+        this.miniMessage = miniMessage;
     }
 
     @EventHandler
@@ -40,8 +45,38 @@ public class LifeStealCoreController implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    void onTier1(PlayerInteractEvent event) {
+        ItemStack itemStack = event.getItem();
+
+        if (itemStack == null || itemStack.getType() != this.pluginConfig.itemMaterial) {
+            return;
+        }
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta != null || !itemMeta.hasDisplayName()) {
+            return;
+        }
+
+        String displayName = itemStack.getItemMeta().getDisplayName();
+        String coloredName = this.miniMessage.serialize(this.miniMessage.deserialize(displayName));
+
+        if (!displayName.equals(coloredName)) {
+            return;
+        }
+
+        int currentHp = this.getPlayerHp(event.getPlayer());
+
+        if (currentHp >= this.pluginConfig.itemTier1HpMax) {
+            this.multification.player(event.getPlayer().getUniqueId(), message -> message.maximumHpReached);
+            event.setCancelled(true);
+        }
+    }
+
+
     @EventHandler
-    void onInteract(PlayerInteractEvent event) {
+    void onUltraItem(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
 
         if (item == null || !item.hasItemMeta()) {

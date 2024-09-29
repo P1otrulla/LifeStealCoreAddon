@@ -26,6 +26,12 @@ public class PluginConfig extends OkaeriConfig {
     public int ultraAdditionHp = 1;
 
     @Comment
+    @Comment("Nazwa itemu dodającego życie tier 1")
+    public String itemTier1Name = "&4Heart &7[Tier &fI&7]";
+    public Material itemMaterial = Material.CLOCK;
+    public int itemTier1HpMax = 30;
+
+    @Comment
     @Comment("Item dodający życie")
     public ItemStack ultraItem = new ItemBuilder(Material.NETHER_STAR)
             .setName("&cUltra item")
