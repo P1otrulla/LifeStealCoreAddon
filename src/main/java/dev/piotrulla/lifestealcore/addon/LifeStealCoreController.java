@@ -43,34 +43,10 @@ public class LifeStealCoreController implements Listener {
             this.multification.player(player.getUniqueId(), message -> message.maximumHpReachedOnlyUltraUse);
             event.setCancelled(true);
         }
-    }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    void onTier1(PlayerInteractEvent event) {
-        ItemStack itemStack = event.getItem();
-
-        if (itemStack == null || itemStack.getType() != this.pluginConfig.itemMaterial) {
-            return;
-        }
-
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (itemMeta != null || !itemMeta.hasDisplayName()) {
-            return;
-        }
-
-        String displayName = itemStack.getItemMeta().getDisplayName();
-        String coloredName = this.miniMessage.serialize(this.miniMessage.deserialize(displayName));
-
-        if (!displayName.equals(coloredName)) {
-            return;
-        }
-
-        int currentHp = this.getPlayerHp(event.getPlayer());
-
-        if (currentHp >= this.pluginConfig.itemTier1HpMax) {
-            this.multification.player(event.getPlayer().getUniqueId(), message -> message.maximumHpReached);
+        if (hearts >= this.pluginConfig.maxHpUsingLifeStealCore) {
             event.setCancelled(true);
+            this.multification.player(player.getUniqueId(), multification -> multification.maximumHpReachedOnlyUltraUse);
         }
     }
 

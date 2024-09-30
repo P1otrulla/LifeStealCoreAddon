@@ -18,18 +18,16 @@ public class PluginConfig extends OkaeriConfig {
     public int minimumHpToUse = 40;
 
     @Comment
+    @Comment("Maksymalna ilość życia do osiągnięcia używając itemów z LifeStealCore")
+    public int maxHpUsingLifeStealCore = 30;
+
+    @Comment
     @Comment("Maksymalna ilość życia do osiągnięcia")
     public int maxUltraHp = 50;
 
     @Comment
     @Comment("Ilość życia dodawana przez item")
     public int ultraAdditionHp = 1;
-
-    @Comment
-    @Comment("Nazwa itemu dodającego życie tier 1")
-    public String itemTier1Name = "&4Heart &7[Tier &fI&7]";
-    public Material itemMaterial = Material.CLOCK;
-    public int itemTier1HpMax = 30;
 
     @Comment
     @Comment("Item dodający życie")

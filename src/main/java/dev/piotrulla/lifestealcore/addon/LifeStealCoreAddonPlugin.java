@@ -38,6 +38,6 @@ public class LifeStealCoreAddonPlugin extends JavaPlugin {
         LifeStealCoreMultification multification = new LifeStealCoreMultification(audienceProvider, pluginConfig, miniMessage);
 
         this.getCommand("stealdev").setExecutor(new LifeStealCoreCommand(multification, configService, pluginConfig, server));
-        server.getPluginManager().registerEvents(new LifeStealCoreController(multification, lifestealCoreAPI, pluginConfig), this);
+        server.getPluginManager().registerEvents(new LifeStealCoreController(multification, lifestealCoreAPI, pluginConfig, miniMessage), this);
     }
 }
